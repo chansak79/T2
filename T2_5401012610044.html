@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 for Test_2</title>
+		<style>
+			body {
+			  font: 14px sans-serif;
+			}
+			p1 {
+			font-size: 16px;
+			font-weight: bold;
+			color: red;
+			}
+			.arc path {
+			  stroke: #fff;
+			}
+		</style>
+        <script src="D3/d3.js"></script>
+    </head>
+    <body>
+		<h2>จุดประสงค์</h2>
+		<ol>
+		<li>เพื่อรณรงค์แก้ไขปัญหา <p1>การติดเกมส์ของนักศึกษา</p1> </li>
+		</ol>
+		<h2>เนื้อหา</h2>
+		<p></p><ol>
+		<li>ที่มาและสาเหตุของการติดเกมส์</li>
+		<li>ผลกระทบที่เกิดจากการติดเกมส์</li>
+		<li>สรุป</li>
+		</ol>
+		<svg width="1000" height="10" align="center">
+		<rect x="0" y="0" width="800" height="3" fill="gray"/>
+		</svg>
+		<h2>1. ที่มาและสาเหตุของการติดเกมส์</h2>
+		<p>ในปัจจุบันพบว่าการอัตราการติดเกมส์มีการเติบโตขึ้นทุกปีอย่างต่อเนื่อง สาเหตุมาจากในปัจจุบันการเลี้ยงดูลูกส่วนใหญ่ใช้ความมักง่ายในการเลี้ยงดู
+		โดยพ่อ แม่ หรือผู้ปกครองมีเวลาให้ลูกน้อยลง เนื่องจากต้องทำงานหาเงิน ทำให้ลูกต้องอยู่บ้านตามลำพังหรืออยู่กับเพื่อนๆ และเกมส์เป็นตัวเลือกหนึ่งของเด็กๆ
+		ที่จะไปเล่นกัน เพราะเกมส์ มีความสนุก ตื้นเต้น สามารถเล่นคนเดียว หรือเล่นกับเพื่อนๆได้ เด็กๆจึงเล่นเกมส์โดยปราศจากคำแนะนำจากผู้ใหญ่จึงเป็นสาเหตุที่
+		ทำให้เกิด <p1>การติดเกมส์</p1></p>
+		<h2>2. ผลกระทบที่เกิดจากการติดเกมส์</h2>
+		<p>ผลกระทบแรก ที่เกิดจากการเล่นเกมส์ คือ เสียเวลา จึงต้องการ แสดงให้เห็นถึงภาพรวมการใช้เวลาเล่นเกมส์ว่าหากเรายังติดเกมส์ เราจะเสียเวลาไปมากแค่ไหน</p>
+		<div id="chart" align="center"></div>
+		<p align="center"><b>กราฟพาย แสดงชั่วโมงการใช้ชีวิตของประชากรไทยอายุต่ำกว่า 40 ปี (เฉพาะคนที่เล่นเกมส์) ค่าเฉลี่ย 1 สัปดาห์</b></p>
+		<p>จะเห็นได้ว่าประชากรไทยที่อายุต่ำกว่า 40 ปี และมีปัญหาติดเกมส์ จะเล่นเกมส์ใช้เวลาไปกับการเล่นเกมส์จำนวนมาก ดังนั้นควรลดเวลาการเล่นเกมส์ให้น้อยลง
+		ใช้เวลาทำอย่างอื่นบ้าง เช่น อยู่กับครอบครัว สร้างสรรค์สิ่งใหม่ๆให้กับโลกใบนี้ เป็นต้น</p>
+		<script>
+			var width = 800,
+				height = 400,
+				radius = Math.min(width, height) / 2;
+
+			var color = d3.scale.ordinal()
+				.range(["#8a89a6", "#7b6888","#FF9999", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+			var arc = d3.svg.arc()
+				.outerRadius(radius - 10)
+				.innerRadius(0);
+
+			var pie = d3.layout.pie()
+				.sort(null)
+				.value(function(d) { return d.time; });
+
+			var svg = d3.select("#chart").append("svg")
+				.attr("width", width)
+				.attr("height", height)
+			  .append("g")
+				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+			d3.csv("data-pie.csv", function(error, data) {
+
+			  data.forEach(function(d) {
+				d.time = +d.time;
+			  });
+
+			  var g = svg.selectAll(".arc")
+				  .data(pie(data))
+				.enter().append("g")
+				  .attr("class", "arc");
+
+			  g.append("path")
+				  .attr("d", arc)
+				  .style("fill", function(d) { return color(d.data.age); });
+
+			  g.append("text")
+				  .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+				  .attr("dy", ".35em")
+				  .style("text-anchor", "middle")
+				  .text(function(d) { return d.data.age; });
+			});
+        </script>
+
+    </body>
